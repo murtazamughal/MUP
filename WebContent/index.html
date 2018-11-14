@@ -9,7 +9,6 @@
 <link href="css/jtable.min.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="css/unibox.min.css"/>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
 	type="text/javascript"></script>
@@ -21,11 +20,11 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
 	type="text/javascript"></script>
 <script src="js/jquery.jtable.js" type="text/javascript"></script>
-<script type="application/javascript" src="js/unibox.min.js"></script>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 
-		$('#example').jtable({
+		$('#selllist').jtable({
 			title : 'The Item List',
 			paging : true, //Enable paging
 			pageSize : 5, //Set page size (default: 10)
@@ -62,8 +61,46 @@
 		});
 
 		//Load student list from server
-		$('#example').jtable('load');
+		$('#selllist').jtable('load');
 
+		$('#product').jtable({
+			title : 'The Item List',
+			paging : true, //Enable paging
+			pageSize : 5, //Set page size (default: 10)
+			sorting : true, //Enable sorting
+			defaultSorting : 'item_name ASC', //Set default sorting
+			actions : {
+				listAction : 'product?action=productlist',
+				deleteAction : 'product?action=productcreate',
+				updateAction : 'product?action=producupdate',
+				createAction : 'product?action=productdelete'
+			},
+			fields : {
+				item_id : {
+					key : true,
+					create : true,
+					edit : true,
+					list : true
+				},
+				item_name : {
+					title : 'Name',
+					width : '23%'
+				},
+				item_category : {
+					title : 'Category',
+					width : '23%'
+				},
+				item_costprice : {
+					title : 'Cost'
+				},
+				item_unitprice : {
+					title : 'Price'
+				}
+			}
+		});
+
+		//Load student list from server
+		$('#product').jtable('load');
 		$('#invoice').jtable({
 			title : 'The Item List',
 			paging : true, //Enable paging
@@ -102,7 +139,7 @@
 		});
 		
 
-		$('#example tbody').on('click', 'tr', function() {
+		$('#selllist tbody').on('click', 'tr', function() {
 			if ($(this).hasClass('selected')) {
 				$(this).removeClass('selected');
 			} else {
@@ -115,7 +152,7 @@
 			table.row('.selected').remove().draw(false);
 		});
 
-		$('#example tbody').on('dblclick', 'tr', function() {
+		$('#selllist tbody').on('dblclick', 'tr', function() {
 			//console.log( table.row( this ).data().item_category );
 			
 			//$('#invoice tbody').closest("jtable-no-data-row").remove());
@@ -184,10 +221,9 @@
 				<!-- Nav tabs -->
 				<ul class="nav nav-tabs tabs-left">
 					<li class="active"><a href="#home" data-toggle="tab">Home</a></li>
-					<li><a href="#profile" data-toggle="tab"><span
-							class="glyphicon glyphicon-floppy-open">Profile</span></a></li>
+					<li><a href="#sell" data-toggle="tab">Sell</span></a></li>
 					<li><a href="#product" data-toggle="tab">Product</a></li>
-					<li><a href="#messages" data-toggle="tab">Messages</a></li>
+					<li><a href="#customer" data-toggle="tab">Messages</a></li>
 					<li><a href="#settings" data-toggle="tab">Settings</a></li>
 				</ul>
 			</div>
@@ -195,78 +231,36 @@
 
 				<!-- Tab panes -->
 				<div class="tab-content">
-					<div class="tab-pane active" id="home"> <form>
-                    <input id="searchInput" class="s" type="text" placeholder="My search..." />
-                    <input type="submit" value="search" />
-                </form></div>
-					<div class="tab-pane" id="profile">Profile Tab.</div>
-					<div class="tab-pane" id="product">
-						<div class="row">
+					<div class="tab-pane active" id="home">Home</div>
+					<div class="tab-pane" id="sell"><div class="row">
 							<div class="col-xs-8">
 
-								<div id="example"></div>
+								<div id="selllist"></div>
 							</div>
 							<div class="col-xs-4">
 								<div id="invoice"></div>
 
 							</div>
 						</div>
-						<div class="tab-pane" id="messages">Messages.</div>
+						</div>
+					<div class="tab-pane" id="product">
+						
+						</div>
+						<div class="tab-pane" id="customer">Messages.</div>
 						<div class="tab-pane" id="settings">Settings</div>
-					</div>
+					
+
+
+
 
 				</div>
 
 			</div>
 
+
+
+
 		</div>
 	</div>
-	<script>
-            var boxes = [];
-
-            sxQuery(document).ready(function() {
-
-                var settings = {
-                    // REQUIRED
-                    //suggestUrl: 'http://localhost:8080/JFF/product?action=productlist'
-                    suggestUrl: 'https://global.sitesearch360.com/sites/suggest?site=fairshopping.online&limit=10&maxQuerySuggestions=50&query=', // the URL that provides the data for the suggest -> this is just an example
-                    // suggestUrl: 'http://yourserver.com/suggests?query=', // the URL that provides the data for the suggest
-                    ivfImagePath: 'http://yourserver.com/images/ivf/', // the base path for instant visual feedback images
-
-                    // OPTIONAL
-                    instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
-                    throttleTime: 100, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
-                    extraHtml: undefined, // extra HTML code that is shown in each search suggest
-                    highlight: true, // whether matched words should be highlighted, default: true
-                    queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
-                    animationSpeed: 200, // speed of the animations, default: 300ms
-                    callbacks: {
-                        enter: function(text,link){console.log('enter callback: '+text);}, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
-                        enterResult: function(text,link){console.log('enter callback result: ' + text);}, // callback on what should happen when enter is pressed on a result or a suggest is clicked
-                    },
-                    placeholder: 'Search for something',
-                    minChars: 3, // minimum number of characters before the suggests shows, default: 3
-                    suggestOrder: [], // the order of the suggests
-                    suggestSelectionOrder: [], // the order of how they should be selected
-                    noSuggests: '<b>We haven\'t found anything for you, <u>sooorrryyy</u></b>',
-                    emptyQuerySuggests: {
-                                    "suggests":{
-                                        "Cool Things to Check Out":[
-                                            {"id":"1","name":"Mason Jar Lid Lights","link":"https://spoonacular.com/articles/mason-jar-lid-lights","image":"https://spoonacular.com/images/articles/mason-jar-lid-lights.jpg"},
-                                            {"id":"2","name":"Spreadable Beer","link":"https://spoonacular.com/articles/spreadable-beer","image":"https://spoonacular.com/images/articles/spreadable-beer.jpg"}
-                                        ],
-                                        "Products":[
-                                            {"name":"Canon PowerShot SX710 HS","image":"https://images-eu.ssl-images-amazon.com/images/I/41JNvHrzCAL._AC_SY200_.jpg","id":"2179584","link":"https://www.amazon.com/Canon-PowerShot-SX720-HS-Black/dp/B01BV14I40/"},
-                                        ]
-                                    }
-                                },
-                    //maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
-                };
-
-                // apply the settings to an input that should get the unibox
-                // apply to multiple boxes
-                boxes = sxQuery(".s").unibox(settings);
-            });
-        </script>
 </body>
 </html>
